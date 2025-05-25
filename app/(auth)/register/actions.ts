@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
 
 export type RegisterState = {
   success: null | boolean;
@@ -23,6 +24,18 @@ export default async function signUp(
   if (password !== confirmPassword)
     return { success: false, message: 'Passwords do not match' };
 
+  const hasEightChars = password.length >= 8;
+  const startsWithUpper = /^[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*]/.test(password);
+
+  if (!hasEightChars || !startsWithUpper || !hasNumber || !hasSpecialChar) {
+    return {
+      success: false,
+      message: 'Password does not meet the required criteria',
+    };
+  }
+
   const { error } = await supabase.auth.signUp({
     email: email,
     password: password,
@@ -30,5 +43,5 @@ export default async function signUp(
 
   if (error) return { success: false, message: error.message };
 
-  return { success: true, message: 'Signed up successfully' };
+  return redirect('/login');
 }

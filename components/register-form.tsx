@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Film, Loader2, MessageCircle } from 'lucide-react';
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import signUp, { RegisterState } from '@/app/(auth)/register/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -22,6 +22,13 @@ export default function RegisterForm() {
     signUp,
     { success: null, message: '' }
   );
+  const [password, setPassword] = useState('');
+  const hasEightChars = password.length >= 8;
+  const startsWithUpper = /^[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*]/.test(password);
+  const isPasswordValid =
+    hasEightChars && startsWithUpper && hasNumber && hasSpecialChar;
 
   return (
     <div className="flex h-screen items-center justify-center">
@@ -33,13 +40,14 @@ export default function RegisterForm() {
           </CardTitle>
           <CardDescription>Create an account to get started</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form action={formAction}>
-            <div className="space-y-4">
+        <form action={formAction}>
+          <div className="space-y-4">
+            <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="Enter your email"
                   required
@@ -49,6 +57,7 @@ export default function RegisterForm() {
                 <Label htmlFor="confirmEmail">Confirm Email</Label>
                 <Input
                   id="confirmEmail"
+                  name="confirmEmail"
                   type="email"
                   placeholder="Confirm your email"
                   required
@@ -58,51 +67,85 @@ export default function RegisterForm() {
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
-                  placeholder="Enter your password"
                   required
+                  onChange={e => setPassword(e.target.value)}
                 />
+                <div className="flex flex-col gap-1 text-xs">
+                  <span
+                    className={
+                      hasEightChars ? 'text-green-500' : 'text-red-500'
+                    }
+                  >
+                    Must contain at least 8 characters
+                  </span>
+                  <span
+                    className={
+                      startsWithUpper ? 'text-green-500' : 'text-red-500'
+                    }
+                  >
+                    Must start with an uppercase letter
+                  </span>
+                  <span
+                    className={hasNumber ? 'text-green-500' : 'text-red-500'}
+                  >
+                    Must include at least one number
+                  </span>
+                  <span
+                    className={
+                      hasSpecialChar ? 'text-green-500' : 'text-red-500'
+                    }
+                  >
+                    Must include at least one special character (!@#$%^&*)
+                  </span>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input
                   id="confirmPassword"
+                  name="confirmPassword"
                   type="password"
                   placeholder="Confirm your password"
                   required
                 />
               </div>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          {state.success === false && (
-            <Alert className="text-muted-foreground">
-              <MessageCircle className="h-4 w-4 !text-red-600" />
-              <AlertTitle className="text-gray-50">Error!</AlertTitle>
-              <AlertDescription>{state.message}</AlertDescription>
-            </Alert>
-          )}
-          {state.success === true && (
-            <Alert className="text-muted-foreground">
-              <MessageCircle className="h-4 w-4 !text-green-600" />
-              <AlertTitle className="text-gray-50">Success!</AlertTitle>
-              <AlertDescription>
-                You have successfully registered. Please check your email to
-                verify your account.
-              </AlertDescription>
-            </Alert>
-          )}
-          <Button className="w-full" type="submit">
-            Register
-          </Button>
-          <p className="text-sm text-gray-500">
-            Already have an account?{' '}
-            <Link href="/login" className="text-primary hover:underline">
-              {pending && <Loader2 className="animate-spin" />}Login
-            </Link>
-          </p>
-        </CardFooter>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-4">
+              {state.success === false && (
+                <Alert className="text-muted-foreground">
+                  <MessageCircle className="h-4 w-4 !text-red-600" />
+                  <AlertTitle className="text-gray-50">Error!</AlertTitle>
+                  <AlertDescription>{state.message}</AlertDescription>
+                </Alert>
+              )}
+              {state.success === true && (
+                <Alert className="text-muted-foreground">
+                  <MessageCircle className="h-4 w-4 !text-green-600" />
+                  <AlertTitle className="text-gray-50">Success!</AlertTitle>
+                  <AlertDescription>
+                    You have successfully registered. Please check your email to
+                    verify your account.
+                  </AlertDescription>
+                </Alert>
+              )}
+              <Button
+                className="w-full"
+                type="submit"
+                disabled={!isPasswordValid}
+              >
+                {pending && <Loader2 className="animate-spin" />}Register
+              </Button>
+              <p className="text-sm text-gray-500">
+                Already have an account?{' '}
+                <Link href="/login" className="text-primary hover:underline">
+                  Login
+                </Link>
+              </p>
+            </CardFooter>
+          </div>
+        </form>
       </Card>
     </div>
   );

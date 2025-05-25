@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
 
 export type LoginState = {
   success: null | boolean;
@@ -20,5 +21,5 @@ export async function signIn(previousState: LoginState, formData: FormData) {
 
   if (error) return { success: false, message: error.message };
 
-  return { success: true, message: 'Logged in successfully' };
+  return redirect('/home');
 }

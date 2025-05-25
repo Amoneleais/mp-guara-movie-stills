@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -10,9 +12,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
-import { Film } from 'lucide-react';
+import { Film, Loader2, MessageCircle } from 'lucide-react';
+import { useActionState } from 'react';
+import { LoginState, signIn } from '@/app/(auth)/login/actions';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function LoginForm() {
+  const [state, formAction, pending] = useActionState<LoginState, FormData>(
+    signIn,
+    { success: null, message: '' }
+  );
+
   return (
     <div className="flex h-screen items-center justify-center">
       <Card className="w-[400px]">
@@ -25,29 +35,57 @@ export default function LoginForm() {
             Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Enter your email" />
+        <form action={formAction}>
+          <div className="space-y-4">
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Enter your password"
+                />
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-4">
+              {state.success === false && (
+                <Alert className="text-muted-foreground">
+                  <MessageCircle className="h-4 w-4 !text-red-600" />
+                  <AlertTitle className="text-gray-50">Error!</AlertTitle>
+                  <AlertDescription>{state.message}</AlertDescription>
+                </Alert>
+              )}
+              {state.success === true && (
+                <Alert className="text-muted-foreground">
+                  <MessageCircle className="h-4 w-4 !text-green-600" />
+                  <AlertTitle className="text-gray-50">Success!</AlertTitle>
+                  <AlertDescription>
+                    You have successfully logged in.
+                  </AlertDescription>
+                </Alert>
+              )}
+              <Button className="w-full">
+                {pending && <Loader2 className="animate-spin" />}Login
+              </Button>
+              <p className="text-sm text-gray-500">
+                Don&apos;t have an account?{' '}
+                <Link href="/register" className="text-primary hover:underline">
+                  Register
+                </Link>
+              </p>
+            </CardFooter>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-            />
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <Button className="w-full">Login</Button>
-          <p className="text-sm text-gray-500">
-            Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-primary hover:underline">
-              Register
-            </Link>
-          </p>
-        </CardFooter>
+        </form>
       </Card>
     </div>
   );
