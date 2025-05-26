@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Film, Loader2, MessageCircle } from 'lucide-react';
 import { useActionState, useState } from 'react';
-import signUp, { RegisterState } from '@/app/(auth)/register/actions';
+import signUp, { RegisterState } from '@/app/(auth)/sign-up/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function RegisterForm() {
@@ -36,9 +36,11 @@ export default function RegisterForm() {
         <CardHeader>
           <CardTitle className="flex items-center text-2xl">
             <Film className="mr-2" />
-            Register
+            Create Account
           </CardTitle>
-          <CardDescription>Create an account to get started</CardDescription>
+          <CardDescription>
+            Sign up now and dive into our exclusive Movie Stills collection
+          </CardDescription>
         </CardHeader>
         <form action={formAction}>
           <div className="space-y-4">
@@ -75,26 +77,26 @@ export default function RegisterForm() {
                 <div className="flex flex-col gap-1 text-xs">
                   <span
                     className={
-                      hasEightChars ? 'text-green-500' : 'text-red-500'
+                      hasEightChars ? 'text-green-500' : 'text-gray-500'
                     }
                   >
                     Must contain at least 8 characters
                   </span>
                   <span
                     className={
-                      startsWithUpper ? 'text-green-500' : 'text-red-500'
+                      startsWithUpper ? 'text-green-500' : 'text-gray-500'
                     }
                   >
                     Must start with an uppercase letter
                   </span>
                   <span
-                    className={hasNumber ? 'text-green-500' : 'text-red-500'}
+                    className={hasNumber ? 'text-green-500' : 'text-gray-500'}
                   >
                     Must include at least one number
                   </span>
                   <span
                     className={
-                      hasSpecialChar ? 'text-green-500' : 'text-red-500'
+                      hasSpecialChar ? 'text-green-500' : 'text-gray-500'
                     }
                   >
                     Must include at least one special character (!@#$%^&*)
@@ -135,12 +137,12 @@ export default function RegisterForm() {
                 type="submit"
                 disabled={!isPasswordValid}
               >
-                {pending && <Loader2 className="animate-spin" />}Register
+                {pending && <Loader2 className="animate-spin" />}Sign Up
               </Button>
               <p className="text-sm text-gray-500">
                 Already have an account?{' '}
-                <Link href="/login" className="text-primary hover:underline">
-                  Login
+                <Link href="/sign-in" className="text-primary hover:underline">
+                  Sign In
                 </Link>
               </p>
             </CardFooter>

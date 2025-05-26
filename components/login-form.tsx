@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Film, Loader2, MessageCircle } from 'lucide-react';
 import { useActionState } from 'react';
-import { LoginState, signIn } from '@/app/(auth)/login/actions';
+import { LoginState, signIn } from '@/app/(auth)/sign-in/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function LoginForm() {
@@ -29,7 +29,7 @@ export default function LoginForm() {
         <CardHeader>
           <CardTitle className="flex items-center text-2xl">
             <Film className="mr-2" />
-            Login
+            Welcome
           </CardTitle>
           <CardDescription>
             Enter your credentials to access your account
@@ -55,6 +55,12 @@ export default function LoginForm() {
                   type="password"
                   placeholder="Enter your password"
                 />
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-gray-500 hover:underline"
+                >
+                  Forgot my password
+                </Link>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
@@ -75,12 +81,12 @@ export default function LoginForm() {
                 </Alert>
               )}
               <Button className="w-full">
-                {pending && <Loader2 className="animate-spin" />}Login
+                {pending && <Loader2 className="animate-spin" />}Sign In
               </Button>
               <p className="text-sm text-gray-500">
                 Don&apos;t have an account?{' '}
-                <Link href="/register" className="text-primary hover:underline">
-                  Register
+                <Link href="/sign-up" className="text-primary hover:underline">
+                  Sign Up
                 </Link>
               </p>
             </CardFooter>

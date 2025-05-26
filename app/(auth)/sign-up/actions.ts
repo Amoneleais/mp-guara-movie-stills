@@ -43,5 +43,5 @@ export default async function signUp(
 
   if (error) return { success: false, message: error.message };
 
-  return redirect('/login');
+  return redirect('/sign-up/success');
 }
